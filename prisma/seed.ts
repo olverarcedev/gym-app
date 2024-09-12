@@ -15,7 +15,6 @@ async function main() {
     data: {
       name: 'Jane Smith',
       email: 'jane.smith@example.com',
-      rut: '12345678-9',
       iconUrl: 'http://example.com/member-icon.png',
       fcmToken: 'some-fcm-token'
     }
