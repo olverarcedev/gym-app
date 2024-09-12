@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin{
+  id          String @id @default(cuid())
+  email       String @unique
+  password String
+}
+
+model Instructor {
+  id          String     @id @default(cuid())
+  name        String
+  description String
+  iconUrl     String
+  Activity    Activity[]
+}
+
+model Member {
+  id          String        @id @default(cuid())
+  name        String
+  email       String        @unique
+  iconUrl     String
+  fcmToken    String?
+  Reservation Reservation[]
+}
+
+model PhotoActivity {
+  id         String   @id @default(cuid())
+  title      String
+  imageUrl   String
+  createdAt  DateTime @default(now())
+  activity   Activity @relation(fields: [activityId], references: [id])
+  activityId String
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  description String
+  iconUrl     String
+  Activity    Activity[]
+}
+
+model Activity {
+  id            String          @id @default(cuid())
+  name          String
+  description   String
+  category      Category        @relation(fields: [categoryId], references: [id])
+  categoryId    String
+  instructor    Instructor      @relation(fields: [instructorId], references: [id])
+  instructorId  String
+  TimeSlot      TimeSlot[]
+  PhotoActivity PhotoActivity[]
+}
+
+model TimeSlot {
+  id          String        @id @default(cuid())
+  activity    Activity      @relation(fields: [activityId], references: [id])
+  activityId  String
+  startTime   String
+  endTime     String
+  dayOfWeek   Int
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Reservation Reservation[]
+}
+
+model Reservation {
+  id              String   @id @default(cuid())
+  member          Member   @relation(fields: [memberId], references: [id])
+  memberId        String
+  timeSlot        TimeSlot @relation(fields: [timeSlotId], references: [id])
+  timeSlotId      String
+  reminderEnabled Boolean
+}
